@@ -28,7 +28,7 @@ export async function handleTransaction(transaction: NearTransaction): Promise<v
   await transactionRecord.save();
 }
 
-export async function handleAction(action: NearAction<Transfer>): Promise<void> {
+/* export async function handleAction(action: NearAction<Transfer>): Promise<void> {
   
   logger.info(`Handling action at ${action.transaction.block_height}`);
 
@@ -38,7 +38,18 @@ export async function handleAction(action: NearAction<Transfer>): Promise<void> 
     sender: action.transaction.signer_id,
     receiver: action.transaction.receiver_id,
     amount: BigInt((action.action as Transfer).deposit.toString()),
-  });
+  }); */
+
+  export async function handleAction(action: NearAction<FunctionCall>): Promise<void> {
+    logger.info(`Handling action at ${action.transaction.block_height}`);
+  
+    const actionRecord = NearActionEntity.create({
+      id: `${action.transaction.result.id}-${action.id}`,
+      sender: action.transaction.signer_id,
+      receiverId: (action.action as FunctionCall).args.toJson().receiver_id.toString(),
+      amount: BigInt((action.action as FunctionCall).args.toJson().amount.toString()),
+      msg: (action.action as FunctionCall).args.toJson().msg.toString(),
+    });
 
   await actionRecord.save();
 }

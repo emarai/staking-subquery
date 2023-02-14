@@ -39,14 +39,14 @@ dataSources:
         - handler: handleTransaction
           kind: near/TransactionHandler
           filter:
-            sender: sweat_welcome.near
-            receiver: token.sweat
+            sender: isaaap.near
+            receiver: token.paras.near
         - handler: handleAction
           kind: near/ActionHandler
           filter:
             type: FunctionCall
-            methodName: storage_deposit
-            receiver: token.sweat
+            methodName: ft_transfer_call
+            receiver: token.paras.near
           ## Some other filter examples
           # filter:
           #    type: DeleteAccount
