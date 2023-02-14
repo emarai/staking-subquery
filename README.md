@@ -1,9 +1,8 @@
 # SubQuery - Starter Package
 
-The Starter Package is an example that you can use as a starting point for developing your SubQuery project.
-A SubQuery Project defines which data The SubQuery will index from the Substrate blockchain, and how it will store it.
+The Starter Package is an example that you can use as a starting point for developing your SubQuery project. A SubQuery Project defines which data will be index from your specified blockchain of chice and how it will store it.
 
-This is a specific starter project for NEAR. It indexes all transactions of the token.sweat contract token from sweat_welcome.near (whick rewards users for physically moving around). It also indexes all storage_deposit calls for the same contract.
+This is a specific starter project for the NEAR blockchain. It indexes all Sweatcoin transactions where the receiver is token.sweat and the sender is sweat_welcome.near. It also indexes all storage_deposit calls for the same contract.
 
 ## Preparation
 
@@ -29,15 +28,15 @@ subql help
 
 ## Initialize the starter package
 
-Inside the directory in which you want to create the SubQuery project, simply replace `project-name` with your project name and run the command:
+Replace `project-name` with your project name and run the command:
 
 ```
 subql init --starter project-name
 ```
 
-Then you should see a folder with your project name has been created inside the directory, you can use this as the start point of your project. And the files should be identical as in the [Directory Structure](https://doc.subquery.network/directory_structure.html).
+This creates a simple working example project to start the creation of your own project. 
 
-Last, under the project directory, run following command to install all the dependency.
+Next, under the project directory, run following command to install all the dependency.
 
 ```
 yarn install
@@ -45,28 +44,23 @@ yarn install
 
 ## Configure your project
 
-In the starter package, we have provided a simple example of project configuration. You will be mainly working on the following files:
+In the starter project, you will be mainly working with the following 3 files:
 
-- The Manifest in `project.yaml`
 - The GraphQL Schema in `schema.graphql`
+- The Manifest in `project.yaml`
 - The Mapping functions in `src/mappings/` directory
 
-For more information on how to write the SubQuery,
-check out our doc section on [Define the SubQuery](https://doc.subquery.network/define_a_subquery.html)
+### Code generation
 
-#### Code generation
-
-In order to index your SubQuery project, it is mandatory to build your project first.
-Run this command under the project directory.
+Run the following command to generate the typescript entities from your schemal file.
 
 ```
 yarn codegen
 ```
 
-## Build the project
+### Build the project
 
-In order to deploy your SubQuery project to our hosted service, it is mandatory to pack your configuration before upload.
-Run pack command from root directory of your project will automatically generate a `your-project-name.tgz` file.
+Run the following command to build your project.
 
 ```
 yarn build
@@ -74,34 +68,66 @@ yarn build
 
 ## Indexing and Query
 
-#### Run required systems in docker
+### Docker
 
-Under the project directory run following command:
+In the project directory, start docker.
 
 ```
 yarn start:docker
 ```
 
-#### Query the project
+### Query the project
 
 Open your browser and head to `http://localhost:3000`.
 
-Finally, you should see a GraphQL playground is showing in the explorer and the schemas that ready to query.
+You should see a GraphQL playground ready to accept queries.
 
-For the `subql-starter` project, you can try to query with the following code to get a taste of how it works.
+For the `subql-starter` project, you can run the following queries:
 
-```graphql
+```
 query {
-  nearTxEntities(first: 50) {
+  nearTxEntities(first: 5) {
     totalCount
     nodes {
       id
     }
   }
-  nearActionEntities(first: 50) {
+  nearActionEntities(first: 5) {
     totalCount
     nodes {
       id
+    }
+  }
+}
+```
+
+The query above returns the first 5 transaction ids along with the first 5 action ids. Note: In NEAR, a [Transaction](https://docs.near.org/concepts/basics/transactions/overview#transaction)) is a collection of Actions that describe what should be done at the destination (the receiver account).
+
+An [Action](https://docs.near.org/concepts/basics/transactions/overview#action) is a composable unit of operation that, together with zero or more other Actions, defines a sensible Transaction. 
+
+```graphql
+query {
+  nearTxEntities(filter:{
+    block:{equalTo:80980080}
+  }) {
+    totalCount
+    nodes {
+      id
+      block
+      signer
+      receiver
+    }
+  }
+  nearActionEntities(filter:{
+    block:{equalTo:80980080}
+  }) {
+    totalCount
+    nodes {
+      id
+      block
+      sender
+      receiver
+      amount
     }
   }
 }
