@@ -82,20 +82,28 @@ Open your browser and head to `http://localhost:3000`.
 
 You should see a GraphQL playground ready to accept queries.
 
-For the `subql-starter` project, you can run the following queries:
+For the `subql-starter` project, you can run the following query:
 
-```
+```graphql
 query {
-  nearTxEntities(first: 5) {
+  nearTxEntities(first: 10) {
     totalCount
     nodes {
       id
+      block
+      receiver
+      signer
     }
   }
-  nearActionEntities(first: 5) {
+  nearActionEntities(first: 10) {
     totalCount
     nodes {
       id
+      block
+      receiver
+      sender
+      amount
+      msg
     }
   }
 }
@@ -105,32 +113,37 @@ The query above returns the first 5 transaction ids along with the first 5 actio
 
 An [Action](https://docs.near.org/concepts/basics/transactions/overview#action) is a composable unit of operation that, together with zero or more other Actions, defines a sensible Transaction. 
 
+The expected output:
+
 ```graphql
-query {
-  nearTxEntities(filter:{
-    block:{equalTo:80980080}
-  }) {
-    totalCount
-    nodes {
-      id
-      block
-      signer
-      receiver
-    }
-  }
-  nearActionEntities(filter:{
-    block:{equalTo:80980080}
-  }) {
-    totalCount
-    nodes {
-      id
-      block
-      sender
-      receiver
-      amount
+{
+  "data": {
+    "nearTxEntities": {
+      "totalCount": 1,
+      "nodes": [
+        {
+          "id": "FFH5vitmHxiCkY12iChfC5CkfnjVVCR4mqZNjCTioGoR-BBJQyuL3qinBVSHWtpLC5MmZp6v2ecfBdZATDv6TamMt",
+          "block": 85093424,
+          "receiver": "token.paras.near",
+          "signer": "isaaap.near"
+        }
+      ]
+    },
+    "nearActionEntities": {
+      "totalCount": 1,
+      "nodes": [
+        {
+          "id": "BBJQyuL3qinBVSHWtpLC5MmZp6v2ecfBdZATDv6TamMt-0",
+          "block": null,
+          "receiver": "staking.paras.near",
+          "sender": "isaaap.near",
+          "amount": "1326000000000000000000",
+          "msg": ""
+        }
+      ]
     }
   }
 }
 ```
 
-Cross check using this NEAR explorer: https://explorer.near.org/
+Cross check using at: https://explorer.near.org/blocks/FFH5vitmHxiCkY12iChfC5CkfnjVVCR4mqZNjCTioGoR
