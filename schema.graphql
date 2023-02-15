@@ -18,4 +18,5 @@ type NearActionEntity @entity {
   sender: String!
   receiver: String!
   amount: BigInt!
+  msg: String
 }
