@@ -146,4 +146,4 @@ The expected output:
 }
 ```
 
-Cross check using at: https://explorer.near.org/blocks/FFH5vitmHxiCkY12iChfC5CkfnjVVCR4mqZNjCTioGoR
+Cross check at: https://explorer.near.org/blocks/FFH5vitmHxiCkY12iChfC5CkfnjVVCR4mqZNjCTioGoR
